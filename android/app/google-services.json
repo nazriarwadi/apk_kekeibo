@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1080471545714",
+    "project_id": "apk-kekeibo",
+    "storage_bucket": "apk-kekeibo.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1080471545714:android:55643705fd734a91669feb",
+        "android_client_info": {
+          "package_name": "com.example.apk_kakeibo"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAamQlwKdIuAc-Gc46Bv_pxnuLbT6Qqa9M"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
