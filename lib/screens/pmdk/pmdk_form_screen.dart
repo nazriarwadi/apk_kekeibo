@@ -31,6 +31,33 @@ class _PmdkFormScreenState extends State<PmdkFormScreen> {
   ];
   final PmdkService _catatanService = PmdkService(); // Instance service
   bool _isLoading = false; // Tambahkan state _isLoading
+  bool _showJenisKakeibo =
+      true; // State untuk menampilkan/menyembunyikan jenis kakeibo
+
+  @override
+  void initState() {
+    super.initState();
+    // Tambahkan listener untuk jenisCatatanController
+    jenisCatatanController.addListener(_onJenisCatatanChanged);
+  }
+
+  void _onJenisCatatanChanged() {
+    setState(() {
+      if (jenisCatatanController.text == "pemasukan") {
+        // Jika jenis catatan adalah pemasukan, set otomatis ke "optional"
+        // dan sembunyikan dropdown jenis kakeibo
+        _showJenisKakeibo = false;
+        jenisKakeiboController.text = "optional";
+      } else {
+        // Jika jenis catatan adalah pengeluaran, tampilkan dropdown jenis kakeibo
+        _showJenisKakeibo = true;
+        // Reset nilai jenis kakeibo jika sebelumnya di-set ke "optional"
+        if (jenisKakeiboController.text == "optional") {
+          jenisKakeiboController.clear();
+        }
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -112,14 +139,62 @@ class _PmdkFormScreenState extends State<PmdkFormScreen> {
               isDropdown: true,
               dropdownItems: jenisCatatanItems,
             ),
-            TextFieldWidget(
-              label: "Jenis Kakeibo",
-              controller: jenisKakeiboController,
-              isNumeric: false,
-              hintText: "Pilih Jenis Kakeibo",
-              isDropdown: true,
-              dropdownItems: jenisKakeiboItems,
-            ),
+            // Tampilkan jenis kakeibo hanya jika _showJenisKakeibo true
+            if (_showJenisKakeibo)
+              TextFieldWidget(
+                label: "Jenis Kakeibo",
+                controller: jenisKakeiboController,
+                isNumeric: false,
+                hintText: "Pilih Jenis Kakeibo",
+                isDropdown: true,
+                dropdownItems: jenisKakeiboItems,
+              )
+            else
+              // Tampilkan informasi bahwa jenis kakeibo otomatis di-set ke "optional"
+              Container(
+                width: double.infinity,
+                padding: const EdgeInsets.symmetric(vertical: 8),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      "Jenis Kakeibo",
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black,
+                      ),
+                    ),
+                    SizedBox(height: 8),
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 16,
+                        vertical: 12,
+                      ),
+                      decoration: BoxDecoration(
+                        color: Colors.grey[200],
+                        borderRadius: BorderRadius.circular(8),
+                        border: Border.all(color: Colors.grey[400]!),
+                      ),
+                      child: Row(
+                        children: [
+                          Icon(Icons.info_outline, color: Colors.blue),
+                          SizedBox(width: 8),
+                          Expanded(
+                            child: Text(
+                              "Tidak berlaku untuk pemasukan",
+                              style: TextStyle(
+                                fontSize: 16,
+                                color: Colors.grey[700],
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
             TextFieldWidget(
               label: "Jumlah",
               controller: jumlahController,
@@ -175,7 +250,10 @@ class _PmdkFormScreenState extends State<PmdkFormScreen> {
           namaCatatan: namaCatatanController.text,
           tanggal: tanggalController.text,
           jenisCatatan: jenisCatatanController.text,
-          jenisKakeibo: jenisKakeiboController.text,
+          jenisKakeibo: jenisCatatanController.text == "pemasukan"
+              ? "optional" // Untuk pemasukan, selalu set ke "optional"
+              : jenisKakeiboController
+                  .text, // Untuk pengeluaran, gunakan nilai dari dropdown
           jumlah: double.parse(cleanJumlah), // Parse ke double
         );
 
@@ -208,10 +286,18 @@ class _PmdkFormScreenState extends State<PmdkFormScreen> {
     if (namaCatatanController.text.isEmpty ||
         tanggalController.text.isEmpty ||
         jenisCatatanController.text.isEmpty ||
-        jenisKakeiboController.text.isEmpty ||
         jumlahController.text.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text("Semua kolom wajib diisi")),
+      );
+      return false;
+    }
+
+    // Untuk pengeluaran, validasi juga jenis kakeibo
+    if (jenisCatatanController.text == "pengeluaran" &&
+        jenisKakeiboController.text.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Jenis Kakeibo wajib diisi untuk pengeluaran")),
       );
       return false;
     }
@@ -235,12 +321,14 @@ class _PmdkFormScreenState extends State<PmdkFormScreen> {
       tanggalController.clear();
       jenisCatatanController.clear();
       jenisKakeiboController.clear();
-      jumlahController.clear();
+      _showJenisKakeibo = true; // Reset ke state default
     });
   }
 
   @override
   void dispose() {
+    // Hapus listener untuk menghindari memory leak
+    jenisCatatanController.removeListener(_onJenisCatatanChanged);
     namaCatatanController.dispose();
     tanggalController.dispose();
     jenisCatatanController.dispose();

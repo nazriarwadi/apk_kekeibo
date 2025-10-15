@@ -67,10 +67,12 @@ class DetailModal extends StatelessWidget {
               label: "Jenis Catatan",
               value: catatan.jenisCatatan,
             ),
-            DetailRowWidget(
-              label: "Jenis Kakeibo",
-              value: catatan.jenisKakeibo,
-            ),
+            // Hanya tampilkan jenis kakeibo jika jenis catatan adalah pengeluaran
+            if (catatan.jenisCatatan == "pengeluaran")
+              DetailRowWidget(
+                label: "Jenis Kakeibo",
+                value: catatan.jenisKakeibo,
+              ),
             DetailRowWidget(
               label: "Jumlah",
               value: CurrencyFormatter.formatToRupiah(catatan.jumlah),
