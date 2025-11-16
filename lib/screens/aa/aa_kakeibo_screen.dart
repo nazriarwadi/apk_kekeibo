@@ -106,21 +106,21 @@ class _KakeiboScreenState extends State<KakeiboScreen> {
                 description:
                     "Pengeluaran penting untuk kebutuhan dasar hidup, seperti makanan, tempat tinggal, dan transportasi.",
               ),
-              const Divider(height: 30, thickness: 0.8),
+              const Divider(height: 30, thickness: 0.8, color: Colors.white),
               _buildCategoryItem(
                 number: 2,
                 title: "Optional",
                 description:
                     "Pengeluaran opsional yang dapat dikurangi, seperti makan di luar atau belanja pakaian.",
               ),
-              const Divider(height: 30, thickness: 0.8),
+              const Divider(height: 30, thickness: 0.8, color: Colors.white),
               _buildCategoryItem(
                 number: 3,
                 title: "Culture",
                 description:
                     "Pengeluaran untuk pengayaan diri, seperti buku, kursus, atau kegiatan budaya.",
               ),
-              const Divider(height: 30, thickness: 0.8),
+              const Divider(height: 30, thickness: 0.8, color: Colors.white),
               _buildCategoryItem(
                 number: 4,
                 title: "Extra",
@@ -150,7 +150,7 @@ class _KakeiboScreenState extends State<KakeiboScreen> {
                 style: const TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.bold,
-                  color: Colors.black87,
+                  color: Colors.white,
                 ),
               ),
               TextSpan(
@@ -158,7 +158,7 @@ class _KakeiboScreenState extends State<KakeiboScreen> {
                 style: const TextStyle(
                   fontSize: 14,
                   fontWeight: FontWeight.normal,
-                  color: Colors.black87,
+                  color: Colors.white,
                 ),
               ),
             ],
@@ -177,10 +177,24 @@ class _KakeiboScreenState extends State<KakeiboScreen> {
       child: Column(
         children: [40, 30, 20, 10].map((value) {
           return RadioListTile<int>(
-            title: Text("$value%"),
+            title: Text(
+              "$value%",
+              style: TextStyle(
+                color: Colors.white, // Warna teks putih
+              ),
+            ),
             value: value,
             groupValue: selectedPercentages[category],
-            activeColor: AppColors.onPrimaryColor,
+            activeColor: Colors.white, // Warna ketika aktif
+            fillColor: MaterialStateProperty.resolveWith<Color>(
+              (Set<MaterialState> states) {
+                // Warna untuk berbagai state
+                if (states.contains(MaterialState.selected)) {
+                  return Colors.white; // Warna ketika dipilih
+                }
+                return Colors.white; // Warna ketika tidak dipilih
+              },
+            ),
             onChanged: (newValue) {
               if (!_isPercentageSelected(newValue!)) {
                 setState(() {
@@ -251,7 +265,7 @@ class _KakeiboScreenState extends State<KakeiboScreen> {
               style: TextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.w600,
-                color: Colors.black,
+                color: AppColors.onErrorColor,
               ),
             ),
           ),

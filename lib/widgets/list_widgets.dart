@@ -38,7 +38,7 @@ class NoteItemWidget extends StatelessWidget {
                   headerText,
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
-                    color: Colors.black,
+                    color: Colors.white,
                   ),
                 ),
               ),
@@ -49,7 +49,7 @@ class NoteItemWidget extends StatelessWidget {
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
-                    color: Colors.black,
+                    color: Colors.white,
                   ),
                 ),
               ),
@@ -65,7 +65,7 @@ class NoteItemWidget extends StatelessWidget {
                   contentText, // Menggunakan parameter contentText
                   style: TextStyle(
                     fontSize: 16,
-                    color: Colors.black,
+                    color: AppColors.onPrimaryColor,
                   ),
                 ),
               ),
@@ -85,7 +85,7 @@ class NoteItemWidget extends StatelessWidget {
                         ),
                         child: Icon(
                           FontAwesomeIcons.eye,
-                          color: Colors.black,
+                          color: AppColors.primaryVariant,
                           size: 20,
                         ),
                       ),
@@ -100,7 +100,7 @@ class NoteItemWidget extends StatelessWidget {
                         ),
                         child: Icon(
                           FontAwesomeIcons.edit,
-                          color: Colors.black,
+                          color: AppColors.primaryVariant,
                           size: 20,
                         ),
                       ),
@@ -115,7 +115,7 @@ class NoteItemWidget extends StatelessWidget {
                         ),
                         child: Icon(
                           FontAwesomeIcons.trashCan,
-                          color: Colors.black,
+                          color: AppColors.primaryVariant,
                           size: 20,
                         ),
                       ),
@@ -135,11 +135,15 @@ class SimpleNoteItemWidget extends StatelessWidget {
   final String headerText;
   final String? contentText; // Parameter untuk isi catatan
   final VoidCallback? onView; // Callback untuk aksi view (opsional)
+  final bool
+      showActionText; // Parameter baru untuk kontrol visibilitas teks "Aksi"
 
   const SimpleNoteItemWidget({
     required this.headerText,
     this.contentText,
-    this.onView, // onView sekarang opsional
+    this.onView,
+    this.showActionText =
+        true, // Default true, bisa di-set false jika tidak mau menampilkan
   });
 
   @override
@@ -164,18 +168,19 @@ class SimpleNoteItemWidget extends StatelessWidget {
                   headerText,
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
-                    color: Colors.black,
+                    color: Colors.white,
                   ),
                 ),
               ),
-              Text(
-                "Aksi",
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  color: Colors.black,
+              if (showActionText) // Hanya tampilkan teks "Aksi" jika showActionText true
+                Text(
+                  "Aksi",
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                  ),
                 ),
-              ),
             ],
           ),
           SizedBox(height: 8),
@@ -188,7 +193,7 @@ class SimpleNoteItemWidget extends StatelessWidget {
                   contentText ?? '', // Menggunakan parameter contentText
                   style: TextStyle(
                     fontSize: 16,
-                    color: Colors.black,
+                    color: Colors.white,
                   ),
                 ),
               ),
@@ -204,7 +209,7 @@ class SimpleNoteItemWidget extends StatelessWidget {
                     ),
                     child: Icon(
                       FontAwesomeIcons.eye,
-                      color: Colors.black,
+                      color: AppColors.primaryColor,
                       size: 20,
                     ),
                   ),
@@ -242,8 +247,8 @@ class RiwayatCatatanWidget extends StatelessWidget {
               decoration: BoxDecoration(
                 color: Colors.transparent, // Warna transparan
                 borderRadius: BorderRadius.circular(12),
-                border:
-                    Border.all(color: Colors.black, width: 1), // Border hitam
+                border: Border.all(
+                    color: AppColors.primaryColor, width: 1), // Border hitam
               ),
               padding: EdgeInsets.symmetric(horizontal: 12),
               child: Row(
@@ -277,12 +282,12 @@ class RiwayatCatatanWidget extends StatelessWidget {
               decoration: BoxDecoration(
                 color: Colors.transparent, // Warna transparan
                 borderRadius: BorderRadius.circular(12),
-                border: Border.all(color: Colors.black, width: 1),
+                border: Border.all(color: AppColors.primaryColor, width: 1),
               ),
               padding: EdgeInsets.all(12),
               child: Icon(
                 FontAwesomeIcons.sort,
-                color: Colors.black,
+                color: AppColors.primaryVariant,
               ),
             ),
           ),
@@ -294,13 +299,13 @@ class RiwayatCatatanWidget extends StatelessWidget {
               decoration: BoxDecoration(
                 color: Colors.transparent, // Warna transparan
                 borderRadius: BorderRadius.circular(12),
-                border:
-                    Border.all(color: Colors.black, width: 1), // Border hitam
+                border: Border.all(
+                    color: AppColors.primaryColor, width: 1), // Border hitam
               ),
               padding: EdgeInsets.all(12),
               child: Icon(
                 FontAwesomeIcons.filter,
-                color: Colors.black,
+                color: AppColors.primaryVariant,
               ),
             ),
           ),

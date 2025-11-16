@@ -10,7 +10,7 @@ plugins {
 
 android {
     namespace = "com.example.apk_kakeibo"
-    compileSdkVersion 35 // Updated to 35 to support required plugins
+    compileSdkVersion 36 // Updated to 35 to support required plugins
     ndkVersion = "27.0.12077973"
 
     compileOptions {
@@ -25,7 +25,7 @@ android {
 
     defaultConfig {
         applicationId = "com.example.apk_kakeibo"
-        minSdkVersion 21 // Compatible with flutter_local_notifications
+        minSdkVersion flutter.minSdkVersion // Compatible with flutter_local_notifications
         targetSdkVersion 35 // Updated to match compileSdkVersion
         versionCode = flutter.versionCode
         versionName = flutter.versionName

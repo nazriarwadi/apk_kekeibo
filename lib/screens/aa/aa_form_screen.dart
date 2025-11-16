@@ -203,7 +203,7 @@ class _AnggaranScreenState extends State<AnggaranScreen> {
                   style: TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
-                    color: AppColors.onPrimaryColor, // Warna teks tombol
+                    color: AppColors.primaryColor, // Warna teks tombol
                   ),
                 ),
               ),

@@ -35,7 +35,7 @@ class IntroScreenDua extends StatelessWidget {
                 const Text(
                   "Sekarang saatnya mengelompokkan pengeluaran Anda berdasarkan metode Kakeibo. Dengan membaginya ke dalam kategori ini, Anda dapat lebih mudah memahami dan mengendalikan keuangan Anda:",
                   style:
-                      TextStyle(fontSize: 14, color: AppColors.onPrimaryColor),
+                      TextStyle(fontSize: 14, color: AppColors.onSurfaceColor),
                   textAlign: TextAlign.center,
                 ),
                 const SizedBox(height: 20),
@@ -71,7 +71,7 @@ class IntroScreenDua extends StatelessWidget {
                 const Text(
                   "Masukkan nominal pengeluaran untuk setiap kategori dengan cermat.",
                   style:
-                      TextStyle(fontSize: 14, color: AppColors.onPrimaryColor),
+                      TextStyle(fontSize: 14, color: AppColors.onSurfaceColor),
                   textAlign: TextAlign.center,
                 ),
                 const SizedBox(height: 25),

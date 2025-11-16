@@ -119,7 +119,7 @@ class _UserInfoWidgetState extends State<UserInfoWidget> {
               Text.rich(
                 TextSpan(
                   text: "Halo, ", // Bagian pertama (tidak bold)
-                  style: const TextStyle(fontSize: 18, color: Colors.black87),
+                  style: const TextStyle(fontSize: 18, color: Colors.white),
                   children: [
                     TextSpan(
                       text:
@@ -127,7 +127,7 @@ class _UserInfoWidgetState extends State<UserInfoWidget> {
                       style: const TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
-                        color: Colors.black87,
+                        color: Colors.white,
                       ),
                     ),
                   ],
@@ -215,7 +215,7 @@ class HomeWidgets {
                 "Pengeluaran",
                 CurrencyFormatter.formatToRupiah(totalPengeluaran),
               ),
-              const Divider(color: AppColors.onPrimaryColor),
+              const Divider(color: AppColors.onBackgroundColor),
               Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
@@ -459,7 +459,7 @@ Widget buildActionButton(
                 style: const TextStyle(
                   fontSize:
                       14, // Ukuran font disesuaikan agar tidak terlalu besar
-                  color: Colors.black, // Ganti warna teks jika diperlukan
+                  color: Colors.white, // Ganti warna teks jika diperlukan
                   fontWeight: FontWeight.bold,
                 ),
                 maxLines: 2, // Batasi jumlah baris teks

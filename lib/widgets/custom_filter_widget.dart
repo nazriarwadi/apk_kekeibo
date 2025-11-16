@@ -34,7 +34,7 @@ class _CustomFilterDialogState extends State<CustomFilterDialog> {
       title: Text(
         "Filter",
         style: TextStyle(
-          color: AppColors.onBackgroundColor,
+          color: AppColors.backgroundColor,
           fontWeight: FontWeight.bold,
         ),
       ),
@@ -56,7 +56,7 @@ class _CustomFilterDialogState extends State<CustomFilterDialog> {
                     widget.dropdownLabels[key] ?? "Pilih",
                     style: const TextStyle(
                       fontWeight: FontWeight.bold,
-                      color: AppColors.onBackgroundColor,
+                      color: AppColors.backgroundColor,
                     ),
                   ),
                   const SizedBox(height: 5), // Spasi antara label dan dropdown
@@ -123,7 +123,7 @@ class _CustomFilterDialogState extends State<CustomFilterDialog> {
             style: const TextStyle(
               fontSize: 14,
               fontWeight: FontWeight.bold,
-              color: AppColors.onPrimaryColor,
+              color: AppColors.primaryVariant,
             ),
           ),
         ),

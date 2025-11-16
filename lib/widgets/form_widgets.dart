@@ -38,7 +38,7 @@ class NavigationWidget extends StatelessWidget {
                 fontSize: 16,
                 fontWeight:
                     isBuatCatatanActive ? FontWeight.bold : FontWeight.normal,
-                color: Colors.black,
+                color: Colors.white,
               ),
             ),
           ),
@@ -48,7 +48,7 @@ class NavigationWidget extends StatelessWidget {
             style: TextStyle(
               fontSize: 16,
               fontWeight: FontWeight.bold,
-              color: Colors.black,
+              color: Colors.white,
             ),
           ),
           SizedBox(width: 10),
@@ -60,7 +60,7 @@ class NavigationWidget extends StatelessWidget {
                 fontSize: 16,
                 fontWeight:
                     isBuatCatatanActive ? FontWeight.normal : FontWeight.bold,
-                color: Colors.black,
+                color: Colors.white,
               ),
             ),
           ),
@@ -106,7 +106,7 @@ class MlNavigationWidget extends StatelessWidget {
                 fontWeight: isRiwayatLaporanActive
                     ? FontWeight.bold
                     : FontWeight.normal,
-                color: Colors.black,
+                color: Colors.white,
               ),
             ),
           ),
@@ -116,7 +116,7 @@ class MlNavigationWidget extends StatelessWidget {
             style: TextStyle(
               fontSize: 16,
               fontWeight: FontWeight.bold,
-              color: Colors.black,
+              color: Colors.white,
             ),
           ),
           SizedBox(width: 10),
@@ -129,7 +129,7 @@ class MlNavigationWidget extends StatelessWidget {
                 fontWeight: isRiwayatLaporanActive
                     ? FontWeight.normal
                     : FontWeight.bold,
-                color: Colors.black,
+                color: Colors.white,
               ),
             ),
           ),
@@ -169,7 +169,7 @@ class KonfigurasiAkunWidget extends StatelessWidget {
               style: TextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.bold,
-                color: Colors.black,
+                color: Colors.white,
               ),
             ),
           ),
@@ -219,7 +219,7 @@ class NavigationWidgetV2 extends StatelessWidget {
                     ? FontWeight.bold
                     : FontWeight.normal,
                 color:
-                    activeSection == "Anggaran" ? Colors.black : Colors.black,
+                    activeSection == "Anggaran" ? Colors.white : Colors.white,
               ),
             ),
           ),
@@ -229,7 +229,7 @@ class NavigationWidgetV2 extends StatelessWidget {
             style: TextStyle(
               fontSize: 16,
               fontWeight: FontWeight.bold,
-              color: Colors.black,
+              color: Colors.white,
             ),
           ),
           SizedBox(width: 10),
@@ -244,7 +244,7 @@ class NavigationWidgetV2 extends StatelessWidget {
                 fontWeight: activeSection == "Kakeibo"
                     ? FontWeight.bold
                     : FontWeight.normal,
-                color: activeSection == "Kakeibo" ? Colors.black : Colors.black,
+                color: activeSection == "Kakeibo" ? Colors.white : Colors.white,
               ),
             ),
           ),
@@ -254,7 +254,7 @@ class NavigationWidgetV2 extends StatelessWidget {
             style: TextStyle(
               fontSize: 16,
               fontWeight: FontWeight.bold,
-              color: Colors.black,
+              color: Colors.white,
             ),
           ),
           SizedBox(width: 10),
@@ -269,7 +269,7 @@ class NavigationWidgetV2 extends StatelessWidget {
                 fontWeight: activeSection == "Hasil"
                     ? FontWeight.bold
                     : FontWeight.normal,
-                color: activeSection == "Hasil" ? Colors.black : Colors.black,
+                color: activeSection == "Hasil" ? Colors.white : Colors.white,
               ),
             ),
           ),
@@ -335,7 +335,7 @@ class HeaderWidget extends StatelessWidget {
                 style: TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
-                  color: Colors.black,
+                  color: Colors.white,
                 ),
               ),
             ),
@@ -411,7 +411,7 @@ class TextFieldWidget extends StatelessWidget {
             label,
             style: const TextStyle(
               fontWeight: FontWeight.bold,
-              color: AppColors.onBackgroundColor,
+              color: AppColors.backgroundColor,
             ),
           ),
           const SizedBox(height: 5),
@@ -477,7 +477,7 @@ class TextFieldWidget extends StatelessWidget {
                     return Theme(
                       data: Theme.of(context).copyWith(
                         colorScheme: ColorScheme.light(
-                          primary: AppColors.onPrimaryColor,
+                          primary: AppColors.chartIncome,
                         ),
                       ),
                       child: child!,
@@ -556,7 +556,7 @@ class ActionButtonsWidget extends StatelessWidget {
             style: const TextStyle(
               fontSize: 18,
               fontWeight: FontWeight.bold,
-              color: AppColors.onPrimaryColor,
+              color: AppColors.secondaryVariant,
             ),
           ),
         ),
@@ -575,7 +575,7 @@ class ActionButtonsWidget extends StatelessWidget {
             style: const TextStyle(
               fontSize: 18,
               fontWeight: FontWeight.bold,
-              color: AppColors.onPrimaryColor,
+              color: AppColors.secondaryVariant,
             ),
           ),
         ),

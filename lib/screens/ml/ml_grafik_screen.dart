@@ -1,6 +1,8 @@
 import 'package:apk_kakeibo/screens/ml/ml_form_screen.dart';
 import 'package:flutter/material.dart';
+import '../../models/pmdk_model.dart';
 import '../../models/user_model.dart';
+import '../../services/pmdk_service.dart';
 import '../../utils/constants.dart';
 import '../../utils/shared_prefs.dart';
 import '../../widgets/form_widgets.dart';
@@ -21,6 +23,7 @@ class MlGrafikScreen extends StatefulWidget {
 class _MlGrafikScreenState extends State<MlGrafikScreen> {
   bool _isLoading = false;
   final HomeWidgets homeWidgets = HomeWidgets();
+  final PmdkService _pmdkService = PmdkService();
 
   // Fungsi untuk menyegarkan data
   Future<void> _refreshData() async {
@@ -77,7 +80,7 @@ class _MlGrafikScreenState extends State<MlGrafikScreen> {
           onGrafikLaporanTap: () {},
         ),
         HeaderWidget(
-          title: "Catatan \nHutang",
+          title: "Melihat \nLaporan",
           onBackPressed: () => Navigator.pop(context),
         ),
       ],
@@ -91,6 +94,7 @@ class _MlGrafikScreenState extends State<MlGrafikScreen> {
       child: SimpleNoteItemWidget(
         headerText: "Informasi Bulan",
         contentText: widget.bulanFormatted,
+        showActionText: false, // Tidak menampilkan teks "Aksi"
       ),
     );
   }
@@ -145,8 +149,9 @@ class _MlGrafikScreenState extends State<MlGrafikScreen> {
 
   // Widget untuk alokasi kategori
   Widget _buildCategoryAllocations() {
-    return FutureBuilder<Map<String, double>>(
-      future: SharedPrefs.getKakeiboResults(),
+    return FutureBuilder<List<Pmdk>>(
+      future:
+          _getFilteredExpenses(), // Gunakan fungsi baru untuk mendapatkan data yang difilter
       builder: (context, snapshotResults) {
         if (snapshotResults.connectionState == ConnectionState.waiting) {
           return const Center(child: CircularProgressIndicator());
@@ -158,10 +163,50 @@ class _MlGrafikScreenState extends State<MlGrafikScreen> {
             ),
           );
         } else {
-          final results = snapshotResults.data!;
+          final filteredExpenses = snapshotResults.data!;
+          // Konversi data Pmdk ke format Map<String, double> yang diharapkan oleh buildCategoryAllocations
+          final results = _convertToKakeiboResults(filteredExpenses);
           return buildCategoryAllocations(results);
         }
       },
     );
+  }
+
+  // Fungsi untuk mendapatkan data yang sudah difilter (hanya pengeluaran)
+  Future<List<Pmdk>> _getFilteredExpenses() async {
+    try {
+      final allCatatan = await _pmdkService.getAllCatatan();
+      // Filter hanya data dengan jenisCatatan = "Pengeluaran"
+      final filteredExpenses = allCatatan
+          .where(
+              (catatan) => catatan.jenisCatatan.toLowerCase() == "pengeluaran")
+          .toList();
+      return filteredExpenses;
+    } catch (e) {
+      print("Error filtering expenses: $e");
+      rethrow;
+    }
+  }
+
+  // Fungsi untuk mengkonversi List<Pmdk> ke Map<String, double>
+  Map<String, double> _convertToKakeiboResults(List<Pmdk> expenses) {
+    final Map<String, double> results = {
+      'survival': 0.0,
+      'optional': 0.0,
+      'culture': 0.0,
+      'extra': 0.0,
+    };
+
+    // Kelompokkan dan jumlahkan berdasarkan jenisKakeibo
+    for (final expense in expenses) {
+      final category = expense.jenisKakeibo;
+      final amount = expense.jumlah;
+
+      if (results.containsKey(category)) {
+        results[category] = (results[category] ?? 0.0) + amount;
+      }
+    }
+
+    return results;
   }
 }

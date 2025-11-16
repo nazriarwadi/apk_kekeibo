@@ -82,7 +82,7 @@ class IntroScreen extends StatelessWidget {
                       SizedBox(height: 10),
                       Text("• Menghemat uang dengan lebih bijak.",
                           style: TextStyle(fontSize: 16, color: Colors.black)),
-                      Text("  • Meraih kebebasan finansial.",
+                      Text("• Meraih kebebasan finansial.",
                           style: TextStyle(fontSize: 16, color: Colors.black)),
                       Text("• Melacak pemasukan dan pengeluaran.",
                           style: TextStyle(fontSize: 16, color: Colors.black)),
@@ -145,7 +145,7 @@ class IntroScreen extends StatelessWidget {
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: AppColors.primaryColor,
-                      foregroundColor: Colors.black,
+                      foregroundColor: Colors.white,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(30),
                       ),

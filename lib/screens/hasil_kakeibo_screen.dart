@@ -60,7 +60,7 @@ class HasilKakeiboScreen extends StatelessWidget {
                   style: TextStyle(
                     fontSize: 22,
                     fontWeight: FontWeight.bold,
-                    color: AppColors.onPrimaryColor,
+                    color: AppColors.onSurfaceColor,
                   ),
                   textAlign: TextAlign.center,
                 ),
@@ -179,7 +179,7 @@ class HasilKakeiboScreen extends StatelessWidget {
               style: TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.bold,
-                color: AppColors.onPrimaryColor,
+                color: AppColors.primaryColor,
               ),
             ),
           ),

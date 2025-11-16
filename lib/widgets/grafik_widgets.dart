@@ -3,6 +3,10 @@ import 'package:syncfusion_flutter_charts/charts.dart';
 import 'package:apk_kakeibo/models/chart_data_model.dart';
 import 'package:apk_kakeibo/utils/shared_prefs.dart';
 import 'package:apk_kakeibo/utils/constants.dart';
+import 'package:apk_kakeibo/services/pmdk_service.dart';
+import 'package:apk_kakeibo/utils/currency_formatter.dart';
+
+import '../models/pmdk_model.dart';
 
 class FinancialPieChart extends StatelessWidget {
   const FinancialPieChart({super.key});
@@ -23,13 +27,14 @@ class FinancialPieChart extends StatelessWidget {
           );
         } else {
           final chartData = snapshot.data!['chartData'] as List<ChartData>;
-          return _buildChart(chartData);
+          final colorMap = snapshot.data!['colorMap'] as Map<String, Color>;
+          return _buildChart(chartData, colorMap);
         }
       },
     );
   }
 
-  Widget _buildChart(List<ChartData> chartData) {
+  Widget _buildChart(List<ChartData> chartData, Map<String, Color> colorMap) {
     // Filter out zero values to make chart cleaner
     final nonZeroData = chartData.where((data) => data.value > 0).toList();
 
@@ -52,7 +57,6 @@ class FinancialPieChart extends StatelessWidget {
         children: [
           Expanded(
             child: SfCircularChart(
-              palette: _getChartColors(),
               title: ChartTitle(
                 text: 'Distribusi Keuangan',
                 textStyle: TextStyle(
@@ -74,23 +78,45 @@ class FinancialPieChart extends StatelessWidget {
               ),
               tooltipBehavior: TooltipBehavior(
                 enable: true,
-                format: 'point.x : Rp{point.y}',
-                textStyle: const TextStyle(
-                  color: Colors.black,
-                  fontSize: 12,
-                ),
-                color: Colors.white,
+                builder: (dynamic data, dynamic point, dynamic series,
+                    int pointIndex, int seriesIndex) {
+                  // Custom tooltip dengan format Rupiah
+                  final ChartData chartData = data as ChartData;
+                  return Container(
+                    padding: const EdgeInsets.all(8),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(4),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.1),
+                          blurRadius: 4,
+                        ),
+                      ],
+                    ),
+                    child: Text(
+                      '${chartData.category} : ${CurrencyFormatter.formatToRupiah(chartData.value)}',
+                      style: const TextStyle(
+                        color: Colors.black,
+                        fontSize: 12,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  );
+                },
               ),
               series: <CircularSeries>[
                 PieSeries<ChartData, String>(
                   dataSource: nonZeroData,
                   xValueMapper: (ChartData data, _) => data.category,
                   yValueMapper: (ChartData data, _) => data.value,
+                  pointColorMapper: (ChartData data, _) =>
+                      colorMap[data.category],
                   dataLabelSettings: DataLabelSettings(
                     isVisible: true,
                     labelPosition: ChartDataLabelPosition.outside,
                     textStyle: const TextStyle(
-                      color: Colors.black,
+                      color: Colors.white,
                       fontSize: 10,
                       fontWeight: FontWeight.bold,
                     ),
@@ -103,6 +129,8 @@ class FinancialPieChart extends StatelessWidget {
                   explode: true,
                   explodeIndex: 0,
                   radius: '70%',
+                  dataLabelMapper: (ChartData data, _) =>
+                      CurrencyFormatter.formatToRupiah(data.value),
                 ),
               ],
             ),
@@ -112,22 +140,30 @@ class FinancialPieChart extends StatelessWidget {
     );
   }
 
-  List<Color> _getChartColors() {
-    return [
-      Colors.blue.shade400,
-      Colors.red.shade400,
-      Colors.green.shade400,
-      Colors.orange.shade400,
-      Colors.purple.shade400,
-      Colors.teal.shade400,
-      Colors.pink.shade400,
-      Colors.amber.shade400,
-    ];
+  // Warna yang konsisten untuk setiap kategori
+  Map<String, Color> _getColorMap() {
+    return {
+      'Pemasukan': Colors.green.shade500,
+      'Pengeluaran Bulanan': Colors.grey.shade800,
+      'Total Pengeluaran': Colors.red.shade700,
+      'Tabungan': Colors.blue.shade500,
+      'Sisa': Colors.orange.shade500,
+      'Survival': Colors.purple.shade500,
+      'Optional': Colors.teal.shade500,
+      'Culture': Colors.amber.shade700,
+      'Extra': Colors.pink.shade500,
+    };
   }
 
   Future<Map<String, dynamic>> _getChartData() async {
     final userData = await SharedPrefs.getUserData();
-    final kakeiboResults = await SharedPrefs.getKakeiboResults();
+
+    // Ambil data summary untuk mendapatkan totalPengeluaran
+    final PmdkService pmdkService = PmdkService();
+    final summary = await pmdkService.getSummary();
+
+    // Ambil data kakeibo dari getAllCatatan() yang difilter
+    final kakeiboResultsFromAPI = await _getKakeiboResultsFromExpenses();
 
     // Tidak perlu pengecekan null karena diasumsikan selalu ada data
     formatValue(double value) => double.parse(value.toStringAsFixed(0));
@@ -136,18 +172,74 @@ class FinancialPieChart extends StatelessWidget {
 
     final List<ChartData> chartData = [
       ChartData('Pemasukan', formatValue(userData?.uangBulanan ?? 0)),
-      ChartData('Pengeluaran', formatValue(userData?.pengeluaranBulanan ?? 0)),
+      ChartData('Total Pengeluaran', formatValue(summary.totalPengeluaran)),
+      ChartData('Pengeluaran Bulanan',
+          formatValue(userData?.pengeluaranBulanan ?? 0)),
       ChartData('Tabungan', formatValue(userData?.tabunganBulanan ?? 0)),
       ChartData('Sisa', formatValue(uangSisa)),
       ChartData(
-          'Kebutuhan Pokok', formatValue(kakeiboResults['Survival'] ?? 0.0)),
+          'Survival', formatValue(kakeiboResultsFromAPI['survival'] ?? 0.0)),
       ChartData(
-          'Kebutuhan Tambahan', formatValue(kakeiboResults['Optional'] ?? 0.0)),
+          'Optional', formatValue(kakeiboResultsFromAPI['optional'] ?? 0.0)),
       ChartData(
-          'Budaya/Hiburan', formatValue(kakeiboResults['Culture'] ?? 0.0)),
-      ChartData('Ekstra', formatValue(kakeiboResults['Extra'] ?? 0.0)),
+          'Culture', formatValue(kakeiboResultsFromAPI['culture'] ?? 0.0)),
+      ChartData('Extra', formatValue(kakeiboResultsFromAPI['extra'] ?? 0.0)),
     ];
 
-    return {'chartData': chartData};
+    final colorMap = _getColorMap();
+
+    return {
+      'chartData': chartData,
+      'colorMap': colorMap,
+    };
+  }
+
+  // Fungsi untuk mendapatkan data kakeibo dari expenses (pengeluaran)
+  Future<Map<String, double>> _getKakeiboResultsFromExpenses() async {
+    try {
+      final PmdkService pmdkService = PmdkService();
+      final allCatatan = await pmdkService.getAllCatatan();
+
+      // Filter hanya data dengan jenisCatatan = "Pengeluaran"
+      final filteredExpenses = allCatatan
+          .where(
+              (catatan) => catatan.jenisCatatan.toLowerCase() == "pengeluaran")
+          .toList();
+
+      // Konversi ke format Map seperti kakeiboResults
+      return _convertToKakeiboResults(filteredExpenses);
+    } catch (e) {
+      print("Error getting kakeibo results from expenses: $e");
+      // Return default values jika error
+      return {
+        'survival': 0.0,
+        'optional': 0.0,
+        'culture': 0.0,
+        'extra': 0.0,
+      };
+    }
+  }
+
+  // Fungsi untuk mengkonversi List<Pmdk> ke Map<String, double>
+  Map<String, double> _convertToKakeiboResults(List<Pmdk> expenses) {
+    final Map<String, double> results = {
+      'survival': 0.0,
+      'optional': 0.0,
+      'culture': 0.0,
+      'extra': 0.0,
+    };
+
+    // Kelompokkan dan jumlahkan berdasarkan jenisKakeibo
+    for (final expense in expenses) {
+      final category = expense.jenisKakeibo
+          .toLowerCase(); // Convert to lowercase for consistency
+      final amount = expense.jumlah;
+
+      if (results.containsKey(category)) {
+        results[category] = (results[category] ?? 0.0) + amount;
+      }
+    }
+
+    return results;
   }
 }

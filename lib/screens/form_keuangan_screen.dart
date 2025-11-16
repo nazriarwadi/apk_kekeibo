@@ -197,7 +197,7 @@ class _FormKeuanganScreenState extends State<FormKeuanganScreen> {
                               style: TextStyle(
                                 fontSize: 18,
                                 fontWeight: FontWeight.bold,
-                                color: AppColors.onPrimaryColor,
+                                color: AppColors.primaryColor,
                               ),
                             ),
                           ),

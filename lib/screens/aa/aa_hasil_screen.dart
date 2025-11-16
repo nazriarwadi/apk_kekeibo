@@ -212,7 +212,7 @@ class _HasilScreenState extends State<HasilScreen> {
                 style: TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
-                  color: AppColors.onPrimaryColor,
+                  color: AppColors.primaryVariant,
                 ),
               ),
             ),

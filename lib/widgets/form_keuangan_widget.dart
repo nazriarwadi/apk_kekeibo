@@ -31,7 +31,7 @@ class CustomTextField extends StatelessWidget {
             label,
             style: const TextStyle(
               fontWeight: FontWeight.bold,
-              color: AppColors.onBackgroundColor,
+              color: AppColors.onPrimaryColor,
             ),
           ),
           const SizedBox(height: 5),
