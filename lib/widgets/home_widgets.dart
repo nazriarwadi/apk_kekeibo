@@ -2,6 +2,7 @@ import 'package:apk_kakeibo/screens/aa/aa_form_screen.dart';
 import 'package:apk_kakeibo/screens/ml/ml_form_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:shimmer/shimmer.dart';
+import '../models/ct_model.dart';
 import '../models/summary_model.dart';
 import '../models/user_model.dart';
 import '../screens/ch/ch_form_screen.dart';
@@ -9,6 +10,7 @@ import '../screens/ct/ct_form_screen.dart';
 import '../screens/pll/pll_form_screen.dart';
 import '../screens/pmdk/pmdk_form_screen.dart';
 import '../services/ch_service.dart';
+import '../services/ct_service.dart';
 import '../services/pmdk_service.dart';
 import '../utils/constants.dart';
 import '../services/user_service.dart';
@@ -264,10 +266,11 @@ Widget buildCategoryAllocations(Map<String, double> results) {
 
 Widget buildFinancialDetails(BuildContext context) {
   final JumlahHutangService _jumlahHutangService = JumlahHutangService();
+  final TabunganService _tabunganService =
+      TabunganService(); // Service untuk tabungan
 
   return FutureBuilder<UserModel?>(
-    future:
-        SharedPrefs.getUserData(), // Ambil data pengguna dari SharedPreferences
+    future: SharedPrefs.getUserData(),
     builder: (context, snapshot) {
       if (snapshot.connectionState == ConnectionState.waiting) {
         return const Center(child: CircularProgressIndicator());
@@ -285,8 +288,7 @@ Widget buildFinancialDetails(BuildContext context) {
         final double tabunganBulanan = user.tabunganBulanan;
 
         return FutureBuilder<double>(
-          future: _jumlahHutangService
-              .getTotalJumlahHutang(), // Ambil total jumlah hutang
+          future: _jumlahHutangService.getTotalJumlahHutang(),
           builder: (context, hutangSnapshot) {
             if (hutangSnapshot.connectionState == ConnectionState.waiting) {
               return const Center(child: CircularProgressIndicator());
@@ -298,38 +300,61 @@ Widget buildFinancialDetails(BuildContext context) {
                 ),
               );
             } else {
-              // Pastikan data tidak null dan konversi ke double
               final double jumlahHutang =
                   (hutangSnapshot.data ?? 0.0).toDouble();
 
-              return Container(
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(16),
-                ),
-                padding: const EdgeInsets.all(15),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    _buildFinancialRow(
-                      "Pemasukan Bulanan",
-                      CurrencyFormatter.formatToRupiah(uangBulanan),
-                    ),
-                    _buildFinancialRow(
-                      "Pengeluaran Bulanan Tetap",
-                      CurrencyFormatter.formatToRupiah(pengeluaranBulanan),
-                    ),
-                    _buildFinancialRow(
-                      "Tabungan Bulanan Dicapai",
-                      CurrencyFormatter.formatToRupiah(tabunganBulanan),
-                    ),
-                    _buildFinancialRow(
-                      "Jumlah Hutang",
-                      CurrencyFormatter.formatToRupiah(
-                          jumlahHutang), // Tampilkan jumlah hutang
-                    ),
-                  ],
-                ),
+              return FutureBuilder<double>(
+                future:
+                    _getTotalTabungan(), // Ambil total tabungan dari database
+                builder: (context, tabunganSnapshot) {
+                  if (tabunganSnapshot.connectionState ==
+                      ConnectionState.waiting) {
+                    return const Center(child: CircularProgressIndicator());
+                  } else if (tabunganSnapshot.hasError) {
+                    return Center(
+                      child: Text(
+                        "Gagal memuat data tabungan",
+                        style: TextStyle(fontSize: 16, color: Colors.red),
+                      ),
+                    );
+                  } else {
+                    final double totalTabunganDatabase =
+                        tabunganSnapshot.data ?? 0.0;
+                    final double totalTabunganKeseluruhan =
+                        tabunganBulanan + totalTabunganDatabase;
+
+                    return Container(
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(16),
+                      ),
+                      padding: const EdgeInsets.all(15),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          _buildFinancialRow(
+                            "Pemasukan Bulanan",
+                            CurrencyFormatter.formatToRupiah(uangBulanan),
+                          ),
+                          _buildFinancialRow(
+                            "Pengeluaran Bulanan Tetap",
+                            CurrencyFormatter.formatToRupiah(
+                                pengeluaranBulanan),
+                          ),
+                          _buildFinancialRow(
+                            "Tabungan Bulanan Dicapai",
+                            CurrencyFormatter.formatToRupiah(
+                                totalTabunganKeseluruhan),
+                          ),
+                          _buildFinancialRow(
+                            "Jumlah Hutang",
+                            CurrencyFormatter.formatToRupiah(jumlahHutang),
+                          ),
+                        ],
+                      ),
+                    );
+                  }
+                },
               );
             }
           },
@@ -337,6 +362,29 @@ Widget buildFinancialDetails(BuildContext context) {
       }
     },
   );
+}
+
+// Fungsi untuk mendapatkan total tabungan dari database
+Future<double> _getTotalTabungan() async {
+  try {
+    final List<Tabungan> semuaTabungan =
+        await TabunganService().getAllTabungan();
+
+    // Hitung total dari semua tabungan (baik pemasukan maupun pengeluaran)
+    double total = 0.0;
+    for (final tabungan in semuaTabungan) {
+      if (tabungan.jenisTabungan.toLowerCase() == 'pemasukan') {
+        total += tabungan.jumlah; // Tambah jika pemasukan
+      } else if (tabungan.jenisTabungan.toLowerCase() == 'pengeluaran') {
+        total -= tabungan.jumlah; // Kurangi jika pengeluaran
+      }
+    }
+
+    return total;
+  } catch (e) {
+    print("Error menghitung total tabungan: $e");
+    return 0.0;
+  }
 }
 
 // Fungsi untuk menampilkan tombol aksi
