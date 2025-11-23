@@ -166,7 +166,7 @@ class _FormKeuanganScreenState extends State<FormKeuanganScreen> {
                           inputFormatters: [CurrencyInputFormatter()],
                         ),
                         CustomTextField(
-                          label: "Pengeluaran Bulanan",
+                          label: "Pengeluaran Bulanan Tetap",
                           controller: pengeluaranBulananController,
                           isNumeric: true,
                           hintText: "Contoh: 2.000.000",

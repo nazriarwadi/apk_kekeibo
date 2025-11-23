@@ -3,6 +3,7 @@ import '../models/user_model.dart';
 import '../utils/constants.dart';
 import '../utils/shared_prefs.dart';
 import '../widgets/home_widgets.dart';
+import '../widgets/info_floating_button.dart';
 import '../widgets/loading_overlay.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -130,6 +131,8 @@ class _HomeScreenState extends State<HomeScreen> {
           },
         ),
       ),
+      // Floating Action Button untuk informasi
+      floatingActionButton: const InfoFloatingButton(),
     );
   }
 }
